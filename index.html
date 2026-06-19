@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>DCNX - connect</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="topbar">
+  <h1>DECENYX - connect</h1>
+</header>
+
+<div class="container">
+
+  <!-- SIDEBAR GAUCHE -->
+<aside class="sidebar-left">
+
+  <!-- 1/3 SALONS -->
+  <div class="rooms">
+    <h3>Salons</h3>
+    <button onclick="selectRoom('MainChat')">Main Chat</button>
+    <button onclick="selectRoom('Spam')">Spam</button>
+    <button onclick="selectRoom('OffTopic')">Off Topic</button>
+    <button onclick="selectRoom('logs')">Logs</button>
+
+    <button onclick="createRoom()">➕ Créer salon</button>
+  </div>
+
+  <!-- 1/3 PROFIL -->
+  <div class="profile-section">
+    <h3>Profil</h3>
+    <input id="pseudo" placeholder="Pseudo">
+    <input id="color" placeholder="#3b82f6">
+    <button onclick="saveProfile()">Valider</button>
+  </div>
+
+  <!-- 1/3 CODES -->
+  <div class="codes">
+    <h3>Codes</h3>
+    <input id="codeInput" placeholder="Entrer un code">
+    <button onclick="applyCode()">Appliquer</button>
+  </div>
+
+</aside>
+
+
+  <!-- CHAT -->
+  <main class="chat">
+
+  <div class="chat-header">
+    <span id="roomTitle">MainChat</span>
+    <span id="roomCount">0 users</span>
+  </div>
+
+  <div id="messages"></div>
+
+  <div class="input-bar">
+    <textarea id="messageInput" placeholder="Message..."></textarea>
+    <button type="button" onclick="sendMessage()">Envoyer</button>
+  </div>
+
+</main>
+
+  <!-- SIDEBAR DROITE -->
+  <aside class="sidebar-right">
+
+  <!-- 1/3 UTILISATEURS -->
+  <div class="users-section">
+    <h3>Utilisateurs</h3>
+    <ul id="users"></ul>
+  </div>
+
+  <!-- 1/3 REPORT -->
+  <div class="report-section">
+    <h3>Report</h3>
+    <button onclick="toggleReport()">Signaler</button>
+  </div>
+
+  <!-- 1/3 STAFF -->
+  <div class="staff-section">
+    <h3>Staff</h3>
+    <button onclick="openStaffLogin()">⏾ Connexion</button>
+  </div>
+
+</aside>
+
+</div>
+
+<!--REPORT-->
+<div id="reportPopup" class="popup hidden">
+  <div class="popup-content pastel">
+    <h3>Signaler</h3>
+
+    <input id="reportUser" placeholder="User">
+    <input id="reportMsg" placeholder="Message">
+
+    <button onclick="sendReport()">Envoyer</button>
+  </div>
+</div>
+
+<!-----STAFF----->
+<div id="staffPopup" class="popup hidden">
+  <div class="popup-content pastel">
+    <h3>Connexion Staff</h3>
+
+    <input id="staffCode" placeholder="Code staff">
+
+    <button onclick="loginStaff()">Se connecter</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
