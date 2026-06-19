@@ -21,11 +21,6 @@ let roomUsers = {
 let users = [];
 let blocked = [];
 
-let effects = {
-  neon: false,
-  pixel: false
-};
-
 /* ================= STAFF =============================================== */
 
 let staffCodes = {
@@ -155,29 +150,7 @@ function saveProfile() {
 }
 
 /* CODES DE PROFIL ============================================================== */
-let effect = null; // effet actif = 1
-let gradientColors = null;
-
-
-function applyCode() {
-  const code = document.getElementById("codeInput").value;
-
-  if (code === "N30N") effects.neon = true;
-  if (code === "MCPX") effects.pixel = true;
-  if (code === "GR34") effects.gradient = true;
-
-  alert("Code has been activated");
-}
-
-/* EFFETS CODES PROFIL */
-
-if (effects.gradient) {
-  name.style.background = "linear-gradient(90deg, #3b82f6, #9333ea)";
-  name.style.webkitBackgroundClip = "text";
-  name.style.color = "transparent";
-}
-
-let effect = null;
+let effect = null; // effet actif
 let effectData = {};
 
 function applyCode() {
@@ -219,6 +192,23 @@ function applyCode() {
     }
 
     effect = "doubleNeon";
+    effectData.colors = [c1, c2];
+  }
+
+  // GRADIENT
+  else if (code === "GR34") {
+    const c1 = prompt("Première couleur HEX (gradient)");
+    const c2 = prompt("Deuxième couleur HEX (gradient)");
+
+    if (
+      !/^#[0-9A-F]{6}$/i.test(c1) ||
+      !/^#[0-9A-F]{6}$/i.test(c2)
+    ) {
+      alert("Couleurs invalides !");
+      return;
+    }
+
+    effect = "gradient";
     effectData.colors = [c1, c2];
   }
 
@@ -330,34 +320,6 @@ function updateRoomHeader() {
 
 /* FONCTION DISPLAY MESSAGE */
 function displayMessages() {
-  if (msg.user === profile.name) {
-
-  //  NEON simple (couleur personnalisée)
-  if (effect === "neon") {
-    name.style.textShadow = `
-      0 0 5px ${effectData.color},
-      0 0 10px ${effectData.color},
-      0 0 20px ${effectData.color}
-    `;
-  }
-
-  //  PIXEL
-  if (effect === "pixel") {
-    name.style.fontFamily = "'Courier New', monospace";
-    name.style.letterSpacing = "1px";
-  }
-
-  //  DOUBLE NEON DIAGONAL
-  if (effect === "doubleNeon") {
-    const [c1, c2] = effectData.colors;
-
-    name.style.textShadow = `
-      2px -2px 8px ${c1},
-     -2px 2px 8px ${c2}
-    `;
-  }
-}
-
   const container = document.getElementById("messages");
   container.innerHTML = "";
 
@@ -380,8 +342,45 @@ function displayMessages() {
 
     name.onclick = () => openUserMenu(msg.user);
 
+    // Applique les effets de profil uniquement sur ses propres messages
+    if (isMe) {
+      //  NEON simple (couleur personnalisée)
+      if (effect === "neon") {
+        name.style.textShadow = `
+          0 0 5px ${effectData.color},
+          0 0 10px ${effectData.color},
+          0 0 20px ${effectData.color}
+        `;
+      }
+
+      //  PIXEL
+      if (effect === "pixel") {
+        name.style.fontFamily = "'Courier New', monospace";
+        name.style.letterSpacing = "1px";
+      }
+
+      //  DOUBLE NEON DIAGONAL
+      if (effect === "doubleNeon") {
+        const [c1, c2] = effectData.colors;
+
+        name.style.textShadow = `
+          2px -2px 8px ${c1},
+         -2px 2px 8px ${c2}
+        `;
+      }
+
+      //  GRADIENT
+      if (effect === "gradient") {
+        const [c1, c2] = effectData.colors;
+
+        name.style.background = `linear-gradient(90deg, ${c1}, ${c2})`;
+        name.style.webkitBackgroundClip = "text";
+        name.style.color = "transparent";
+      }
+    }
+
     div.appendChild(name);
-    div.innerHTML += " : " + msg.text;
+    div.appendChild(document.createTextNode(" : " + msg.text));
 
     container.appendChild(div);
   });
@@ -435,7 +434,6 @@ function sendMessage() {
   input.value = "";
   displayMessages();
 }
-``
 
 function selectRoom(room) {
   if (!room) return;
@@ -484,6 +482,12 @@ function addSystemMessage(text) {
     time: Date.now()
   });
 }
+
+// Vérifie toutes les minutes si des messages doivent être supprimés (2h)
+setInterval(() => {
+  checkAutoDelete();
+  displayMessages();
+}, 60000);
 
 
 /* Creation de room =====================================================*/
